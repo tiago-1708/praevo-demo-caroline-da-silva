@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /aviso-legal
+Disallow: /lp/
+
+Sitemap: https://joseribeiro-advogado.com/sitemap.xml
