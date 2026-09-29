@@ -5,9 +5,12 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system — JRR Advogados (demo).
- * Quase-preto + bronze quente + marfim, como no Instagram do escritório.
- * Type: Cormorant Garamond (títulos, serifa) + Inter (texto).
+ * Design system — Dra. Caroline da Silva (demo).
+ * Preto quente + bordeaux escuro + dourado champanhe, sobre marfim.
+ * Papéis: preto = base (hero, rodapé, blocos escuros); bordeaux = blocos
+ * alternados e acento de texto/ícones em fundo claro (--gold-ink);
+ * dourado = botões, filetes, textura e detalhes em fundo escuro.
+ * Type: Bodoni Moda (títulos, serifa de alto contraste) + Manrope (texto).
  * Light, sober theme only — no dark mode.
  */
 
@@ -58,8 +61,8 @@
   --color-gold-soft: var(--gold-soft);
   --color-gold-ink: var(--gold-ink);
   --color-ivory: var(--ivory);
-  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-serif: "Bodoni Moda", "Didot", Georgia, "Times New Roman", serif;
+  --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
 }
 
 :root {
@@ -68,45 +71,49 @@
   /* Brand — fallbacks. Os valores reais são injectados a partir de
    * siteConfig.brand.colors em __root.tsx. Nomes (--navy, --gold, --ivory)
    * mantidos por retro-compatibilidade com as classes do template. */
-  --navy: #1e1b18;
-  --navy-deep: #121110;
-  --gold: #b08a57;
-  --gold-soft: #d8bf94;
-  --gold-ink: #7a5a30;
-  --ivory: #f7f4ee;
+  --navy: #5a1420; /* bordeaux — blocos escuros alternados */
+  --navy-deep: #141012; /* preto quente */
+  --gold: #c9a45c;
+  --gold-soft: #e8d6a8;
+  --gold-ink: #8a1c2b; /* bordeaux de acento em fundo claro */
+  --ivory: #f8f4ef;
 
-  --background: #f7f4ee;
-  --foreground: #121110;
+  /* Neutros: uma só família de cinzento quente, com um toque rosado. */
+  --background: #f8f4ef;
+  --foreground: #141012;
   --card: #ffffff;
-  --card-foreground: #121110;
+  --card-foreground: #141012;
   --popover: #ffffff;
-  --popover-foreground: #121110;
-  --primary: #121110;
-  --primary-foreground: #f7f4ee;
-  --secondary: #efe9df;
-  --secondary-foreground: #121110;
-  --muted: #efe9df;
-  --muted-foreground: #5e574f; /* 6,5:1 sobre o fundo */
-  --accent: #b08a57;
-  --accent-foreground: #121110;
+  --popover-foreground: #141012;
+  --primary: #141012;
+  --primary-foreground: #f8f4ef;
+  --secondary: #f1e9e4;
+  --secondary-foreground: #141012;
+  --muted: #f1e9e4;
+  --muted-foreground: #5f5357; /* 6,7:1 sobre o fundo · 6,1:1 sobre --muted */
+  --accent: #c9a45c;
+  --accent-foreground: #141012;
   --destructive: oklch(0.52 0.2 27);
-  --destructive-foreground: #f7f4ee;
-  --border: #e2d9ca;
-  --input: #ddd3c3;
-  --ring: #b08a57;
+  --destructive-foreground: #f8f4ef;
+  --border: #e6dbd6;
+  --input: #dccfca;
+  --ring: #8a1c2b;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: #f7f4ee;
-  --sidebar-foreground: #121110;
-  --sidebar-primary: #121110;
-  --sidebar-primary-foreground: #f7f4ee;
-  --sidebar-accent: #efe9df;
-  --sidebar-accent-foreground: #121110;
-  --sidebar-border: #e2d9ca;
-  --sidebar-ring: #b08a57;
+  --sidebar: #f8f4ef;
+  --sidebar-foreground: #141012;
+  --sidebar-primary: #141012;
+  --sidebar-primary-foreground: #f8f4ef;
+  --sidebar-accent: #f1e9e4;
+  --sidebar-accent-foreground: #141012;
+  --sidebar-border: #e6dbd6;
+  --sidebar-ring: #8a1c2b;
+
+  /* Anel de foco: bordeaux em fundo claro; .surface-dark troca para dourado. */
+  --focus-ring: var(--gold-ink);
 }
 
 .dark {
@@ -163,15 +170,30 @@
     letter-spacing: -0.005em;
   }
 
-  /* Cormorant usa algarismos antigos por omissão; telefones e datas leem-se
-   * melhor com algarismos alinhados. */
+  /* Algarismos alinhados nos títulos e na serifa: telefones e datas leem-se
+   * melhor assim. */
   h1, h2, h3, h4, h5,
   .font-serif {
     font-variant-numeric: lining-nums;
+    /* A Bodoni Moda tem eixo óptico (6–96). Em automático, os títulos grandes
+     * iam buscar o desenho de cartaz, com filetes tão finos que o "e" se lia
+     * "c" no ecrã. Fixamos um tamanho óptico de texto: mantém o contraste
+     * clássico sem perder legibilidade. */
+    font-optical-sizing: none;
+    font-variation-settings: "opsz" 16;
   }
 
   ::selection {
-    background-color: var(--gold-soft);
+    background-color: var(--gold-ink);
+    color: var(--ivory);
+  }
+
+  /* Blocos escuros (hero, rodapé, header): foco e seleção em dourado. */
+  .surface-dark {
+    --focus-ring: var(--gold-soft);
+  }
+  .surface-dark ::selection {
+    background-color: var(--gold);
     color: var(--navy-deep);
   }
 }
@@ -184,7 +206,7 @@
 }
 
 @layer components {
-  /* Botões — pílula, bronze sólido, texto em minúsculas. Tamanho base,
+  /* Botões — pílula, dourado sólido, texto em minúsculas. Tamanho base,
    * .btn-sm (header) e .btn-lg (heros/CTAs). Cores vêm dos tokens da marca. */
   .btn-primary,
   .btn-outline {
@@ -216,8 +238,8 @@
     font-size: 1rem;
   }
 
-  /* Cheio: bronze sólido com realce interior de 1px (luz de cima) e sombra
-   * curta tingida do quase-preto — sem gradiente nem halo. */
+  /* Cheio: dourado sólido com realce interior de 1px (luz de cima) e sombra
+   * curta tingida do preto quente — sem gradiente nem halo. */
   .btn-primary {
     color: var(--navy-deep);
     background-color: var(--gold);
@@ -260,7 +282,7 @@
 
   .btn-primary:focus-visible,
   .btn-outline:focus-visible {
-    outline: 2px solid var(--gold-soft);
+    outline: 2px solid var(--focus-ring);
     outline-offset: 3px;
   }
 
@@ -274,7 +296,7 @@
   .card-lift:hover {
     transform: translateY(-4px);
     box-shadow: 0 22px 44px -20px color-mix(in srgb, var(--navy-deep) 35%, transparent);
-    border-color: var(--gold);
+    border-color: var(--gold-ink);
   }
   .card-lift::after {
     content: "";
@@ -283,7 +305,8 @@
     pointer-events: none;
     background: radial-gradient(
       280px circle at var(--spot-x, 50%) var(--spot-y, 50%),
-      color-mix(in srgb, var(--gold) 22%, transparent) 0%,
+      color-mix(in srgb, var(--spot-color, var(--gold-ink)) var(--spot-strength, 9%), transparent)
+        0%,
       transparent 55%
     );
     opacity: 0;
@@ -346,6 +369,25 @@
   .link-underline:focus-visible::after {
     transform: scaleX(1);
     transform-origin: left center;
+  }
+
+  /* Cartões que ficam escuros no hover: filete e spotlight passam a dourado. */
+  .card-dark-hover:hover {
+    border-color: var(--gold);
+    --spot-color: var(--gold);
+    --spot-strength: 20%;
+  }
+
+  /* Textura guilloché (public/textures/guilloche.svg, gerada por
+   * scripts/generate-guilloche.mjs) aplicada como máscara: a cor vem do
+   * token --gold, a opacidade do componente <Guilloche>. */
+  .guilloche {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-color: var(--gold);
+    -webkit-mask: url("/textures/guilloche.svg") center / cover no-repeat;
+    mask: url("/textures/guilloche.svg") center / cover no-repeat;
   }
 
   /* Zoom lento de imagem (ex.: retrato do advogado) dentro de um

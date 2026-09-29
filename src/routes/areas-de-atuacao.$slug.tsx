@@ -4,7 +4,14 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { Reveal } from "@/components/site/Reveal";
 import { Eyebrow, PageHero } from "@/components/site/Brand";
 import { FaqBody } from "@/components/site/FaqItem";
-import { getArea, getFaq, siteConfig, siteName, absoluteUrl } from "@/lib/site-config";
+import {
+  getArea,
+  getFaq,
+  siteConfig,
+  siteName,
+  absoluteUrl,
+  emLocalidade,
+} from "@/lib/site-config";
 
 export const Route = createFileRoute("/areas-de-atuacao/$slug")({
   // O loader devolve só o slug: os dados do loader são serializados para a
@@ -18,7 +25,7 @@ export const Route = createFileRoute("/areas-de-atuacao/$slug")({
     if (!area) return {};
     return {
       meta: [
-        { title: `${area.title} — ${siteName()}` },
+        { title: `${area.title} — ${siteName()}, Advogada${emLocalidade()}` },
         { name: "description", content: area.short },
         { property: "og:title", content: `${area.title} — ${siteName()}` },
       ],
@@ -99,7 +106,7 @@ function AreaPage() {
 
           <aside>
             <Reveal delay={150} className="lg:sticky lg:top-28">
-              <div className="rounded-md bg-[color:var(--navy-deep)] p-8 text-[color:var(--ivory)]">
+              <div className="surface-dark rounded-md bg-[color:var(--navy-deep)] p-8 text-[color:var(--ivory)]">
                 <p className="text-[11px] uppercase tracking-[0.25em] text-[color:var(--gold)]">
                   A quem se dirige
                 </p>
@@ -110,7 +117,7 @@ function AreaPage() {
                 </ul>
                 <div className="mt-8 border-t border-[color:var(--gold)]/25 pt-8">
                   <p className="text-sm leading-relaxed text-[color:var(--ivory)]/75">
-                    Quanto mais cedo, melhor. Fale connosco antes de decidir.
+                    Uma primeira conversa ajuda a perceber as opções e os prazos do seu caso.
                   </p>
                   <Link to="/contactos" className="btn-primary mt-6 w-full">
                     Marcar reunião <ArrowRight className="h-4 w-4" aria-hidden />
@@ -142,7 +149,7 @@ function AreaPage() {
                   <Link
                     to="/areas-de-atuacao/$slug"
                     params={{ slug: x.slug }}
-                    className="inline-block rounded-sm border border-border bg-background px-4 py-2 text-sm text-[color:var(--navy-deep)] transition-colors hover:border-[color:var(--gold)] hover:text-[color:var(--gold-ink)]"
+                    className="inline-block rounded-sm border border-border bg-background px-4 py-2 text-sm text-[color:var(--navy-deep)] transition-colors hover:border-[color:var(--gold-ink)] hover:text-[color:var(--gold-ink)]"
                   >
                     {x.title}
                   </Link>

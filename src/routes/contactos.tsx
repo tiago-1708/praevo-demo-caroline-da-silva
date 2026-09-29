@@ -15,15 +15,15 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { sendContactEmail } from "@/lib/send-contact-email";
 import { contactSubmissionSchema } from "@/lib/contact-submission";
 import { trackEvent } from "@/lib/analytics";
-import { siteConfig, siteName, absoluteUrl, isPlaceholder } from "@/lib/site-config";
+import { siteConfig, siteName, absoluteUrl, isPlaceholder, emLocalidade } from "@/lib/site-config";
 
 export const Route = createFileRoute("/contactos")({
   head: () => ({
     meta: [
-      { title: `Contactos — ${siteName()}` },
+      { title: `Contactos — ${siteName()}, Advogada${emLocalidade()}` },
       {
         name: "description",
-        content: `Contactos do ${siteName()} em ${siteConfig.advogado.locality}: telemóvel ${siteConfig.advogado.phoneDisplay}, email ${siteConfig.advogado.email} e formulário.`,
+        content: `Contactos de ${siteName()}, advogada${emLocalidade()}: telefone, email e formulário para marcar reunião.`,
       },
       { property: "og:title", content: `Contactos — ${siteName()}` },
     ],
@@ -34,11 +34,14 @@ export const Route = createFileRoute("/contactos")({
 
 function Contactos() {
   const a = siteConfig.advogado;
-  // Enquanto a morada não estiver confirmada, o mapa mostra apenas a localidade.
+  // Enquanto a morada não estiver confirmada, o mapa mostra apenas a
+  // localidade (ou Portugal, se também a localidade estiver por confirmar).
   const mapsQuery = encodeURIComponent(
-    isPlaceholder(a.street)
-      ? `${a.locality}, Portugal`
-      : `${a.street}, ${a.postalCode} ${a.locality}`,
+    !isPlaceholder(a.street)
+      ? `${a.street}, ${a.postalCode} ${a.locality}`
+      : !isPlaceholder(a.locality)
+        ? `${a.locality}, Portugal`
+        : "Portugal",
   );
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -114,14 +117,14 @@ function Contactos() {
   };
 
   const field =
-    "w-full rounded-sm border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-all duration-200 focus:border-[color:var(--gold)] focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--gold)_20%,transparent)]";
+    "w-full rounded-sm border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-all duration-200 focus:border-[color:var(--gold-ink)] focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--gold-ink)_14%,transparent)]";
   const label = "mb-1.5 block text-[11px] uppercase tracking-[0.2em] text-muted-foreground";
 
   return (
     <SiteLayout>
-      <PageHero eyebrow="Contactos" title="Falar com o escritório">
-        Atendimento presencial em {a.locality}. Ligue, escreva ou deixe os seus contactos — o
-        escritório entrará em contacto consigo.
+      <PageHero eyebrow="Contactos" title="Falar com a advogada">
+        Atendimento presencial, por marcação, em {a.locality}. Ligue, escreva ou deixe os seus
+        contactos — a advogada entrará em contacto consigo.
       </PageHero>
 
       <section className="bg-background py-20 lg:py-24">
@@ -162,19 +165,18 @@ function Contactos() {
                       >
                         {a.phoneDisplay}
                       </a>{" "}
-                      <span className="text-[11px] text-muted-foreground">
+                      <span className="block text-[11px] text-muted-foreground">
                         (chamada para a rede móvel nacional)
                       </span>
                       {a.phoneAltE164 && (
                         <>
-                          <br />
                           <a
                             href={`tel:${a.phoneAltE164}`}
                             className="font-serif text-xl hover:text-[color:var(--gold-ink)]"
                           >
                             {a.phoneAltDisplay}
                           </a>{" "}
-                          <span className="text-[11px] text-muted-foreground">
+                          <span className="block text-[11px] text-muted-foreground">
                             (chamada para a rede fixa nacional)
                           </span>
                         </>
@@ -194,7 +196,7 @@ function Contactos() {
                     <dd className="mt-1">
                       <a
                         href={`mailto:${a.email}`}
-                        className="font-serif text-xl hover:text-[color:var(--gold-ink)]"
+                        className="font-serif text-xl break-all hover:text-[color:var(--gold-ink)]"
                       >
                         {a.email}
                       </a>
@@ -232,19 +234,19 @@ function Contactos() {
                 Envie os seus contactos
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                O escritório entrará em contacto consigo pelo telefone ou email indicado.
+                A advogada entrará em contacto consigo pelo telefone ou email indicado.
               </p>
 
               {sent ? (
                 <div className="mt-8 flex flex-col items-start gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[color:var(--gold)]/15">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[color:var(--gold-ink)]/10">
                     <CheckCircle2 className="h-6 w-6 text-[color:var(--gold-ink)]" aria-hidden />
                   </div>
                   <h3 className="font-serif text-xl text-[color:var(--navy-deep)]">
                     Pedido recebido
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Entraremos em contacto brevemente.
+                    A advogada entrará em contacto consigo.
                   </p>
                 </div>
               ) : (
@@ -338,7 +340,7 @@ function Contactos() {
                       name="consent"
                       type="checkbox"
                       required
-                      className="mt-1 h-4 w-4 shrink-0 accent-[color:var(--gold)]"
+                      className="mt-1 h-4 w-4 shrink-0 accent-[color:var(--gold-ink)]"
                     />
                     <span>
                       Aceito o{" "}

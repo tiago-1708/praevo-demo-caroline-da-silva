@@ -3,16 +3,16 @@ import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Eyebrow, PageHero } from "@/components/site/Brand";
-import { siteConfig, siteName, absoluteUrl } from "@/lib/site-config";
+import { siteConfig, siteName, absoluteUrl, emLocalidade } from "@/lib/site-config";
 import { handleSpot } from "@/lib/spotlight";
 
 export const Route = createFileRoute("/areas-de-atuacao/")({
   head: () => ({
     meta: [
-      { title: `Áreas de Prática — ${siteName()}` },
+      { title: `Áreas de Prática — ${siteName()}, Advogada${emLocalidade()}` },
       {
         name: "description",
-        content: `Áreas de prática do ${siteName()} em ${siteConfig.advogado.locality}: ${siteConfig.areas.map((a) => a.title).join(", ")}.`,
+        content: `Áreas de prática de ${siteName()}, advogada${emLocalidade()}: ${siteConfig.areas.map((a) => a.title).join(", ")}.`,
       },
       { property: "og:title", content: `Áreas de Prática — ${siteName()}` },
     ],
@@ -24,9 +24,9 @@ export const Route = createFileRoute("/areas-de-atuacao/")({
 function AreasIndex() {
   return (
     <SiteLayout>
-      <PageHero eyebrow="Áreas de prática" title="Onde acompanhamos os nossos clientes">
-        Uma boutique de advocacia full service: prestamos serviços a empresas privadas, a
-        particulares e a entidades públicas.
+      <PageHero eyebrow="Áreas de prática" title="Em que assuntos acompanhamos os clientes">
+        Prestamos serviços a particulares, a famílias e a pequenos negócios, nas questões jurídicas
+        que marcam o dia a dia.
       </PageHero>
 
       <section className="bg-background py-20 lg:py-24">
@@ -71,7 +71,7 @@ function AreasIndex() {
 
           <Reveal className="mt-16 grid gap-8 rounded-md bg-[color:var(--muted)] p-8 sm:p-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
             <div>
-              <Eyebrow>Prevenção</Eyebrow>
+              <Eyebrow>O princípio</Eyebrow>
               <p className="font-serif text-2xl leading-snug text-[color:var(--navy-deep)] sm:text-3xl">
                 {siteConfig.perfil.motto}
               </p>

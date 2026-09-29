@@ -16,7 +16,7 @@ export function FaqBody({ faq }: { faq: Faq }) {
           </li>
         ))}
       </ol>
-      <p className="mt-5 border-l border-[color:var(--gold)] pl-4 text-[color:var(--navy-deep)]">
+      <p className="mt-5 border-l border-[color:var(--gold-ink)] pl-4 text-[color:var(--navy-deep)]">
         {faq.note}
       </p>
     </div>

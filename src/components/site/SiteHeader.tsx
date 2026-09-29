@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
-import { Wordmark } from "./Brand";
+import { Logo } from "./Logo";
 
 const nav = [
   { to: "/", label: "Início" },
@@ -25,19 +25,19 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+      className={`surface-dark fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled || open
           ? "border-b border-[color:var(--gold)]/20 bg-[color:var(--navy-deep)]/95 backdrop-blur"
           : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3.5 lg:py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3.5 sm:gap-4 sm:px-6 lg:py-4">
         <Link
           to="/"
           className="flex min-w-0 items-center text-[color:var(--ivory)]"
-          aria-label={`${siteConfig.advogado.firm} — início`}
+          aria-label={`${siteConfig.advogado.name} — início`}
         >
-          <Wordmark size="sm" />
+          <Logo size="sm" />
         </Link>
 
         <nav className="hidden items-center gap-8 lg:flex">
@@ -68,7 +68,7 @@ export function SiteHeader() {
           <a
             href={`tel:${a.phoneE164}`}
             className="btn-primary btn-sm"
-            aria-label="Ligar para o escritório"
+            aria-label="Ligar para a advogada"
           >
             <Phone className="h-4 w-4" aria-hidden />
             Ligar
