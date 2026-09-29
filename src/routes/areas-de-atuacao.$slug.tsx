@@ -1,17 +1,21 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Phone } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import { getArea, siteConfig, siteName, absoluteUrl } from "@/lib/site-config";
+import { Reveal } from "@/components/site/Reveal";
+import { Eyebrow, PageHero } from "@/components/site/Brand";
+import { FaqBody } from "@/components/site/FaqItem";
+import { getArea, getFaq, siteConfig, siteName, absoluteUrl } from "@/lib/site-config";
 
 export const Route = createFileRoute("/areas-de-atuacao/$slug")({
+  // O loader devolve só o slug: os dados do loader são serializados para a
+  // hidratação e `area.icon` (componente React) não é serializável.
   loader: ({ params }) => {
-    const area = getArea(params.slug);
-    if (!area) throw notFound();
-    return { area };
+    if (!getArea(params.slug)) throw notFound();
+    return { slug: params.slug };
   },
   head: ({ loaderData }) => {
-    if (!loaderData) return {};
-    const { area } = loaderData;
+    const area = loaderData ? getArea(loaderData.slug) : undefined;
+    if (!area) return {};
     return {
       meta: [
         { title: `${area.title} — ${siteName()}` },
@@ -25,50 +29,109 @@ export const Route = createFileRoute("/areas-de-atuacao/$slug")({
 });
 
 function AreaPage() {
-  const { area } = Route.useLoaderData();
-  const Icon = area.icon;
+  const { slug } = Route.useLoaderData();
+  const area = getArea(slug);
+  const a = siteConfig.advogado;
+  if (!area) return null;
+  const faq = area.faq ? getFaq(area.faq) : undefined;
 
   return (
     <SiteLayout>
-      <section className="bg-[color:var(--navy-deep)] text-[color:var(--ivory)]">
-        <div className="mx-auto max-w-4xl px-6 pt-32 pb-16 lg:pt-40">
+      <PageHero
+        eyebrow={
           <Link
             to="/areas-de-atuacao"
-            className="animate-fade-rise mb-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-[color:var(--gold)] hover:text-[color:var(--gold-soft)]"
+            className="inline-flex items-center gap-2 hover:text-[color:var(--gold-soft)]"
           >
-            ← Todas as áreas
+            <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> Áreas de prática
           </Link>
-          <Icon
-            className="animate-fade-rise delay-1 h-8 w-8 text-[color:var(--gold)]"
-            aria-hidden
-          />
-          <h1 className="animate-fade-rise delay-2 mt-6 max-w-3xl font-serif text-4xl leading-[1.05] sm:text-5xl">
-            {area.title}
-          </h1>
-          <p className="animate-fade-rise delay-3 mt-6 max-w-2xl text-lg leading-relaxed text-[color:var(--ivory)]/85">
-            {area.short}
-          </p>
-        </div>
-      </section>
+        }
+        title={area.title}
+      >
+        {area.short}
+      </PageHero>
 
-      <section className="bg-background py-20">
-        <div className="mx-auto max-w-3xl px-6">
-          <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">{area.long}</p>
+      <section className="bg-background py-20 lg:py-24">
+        <div className="mx-auto grid max-w-6xl gap-14 px-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:gap-20">
+          <div>
+            <Reveal>
+              <p className="font-serif text-2xl leading-snug text-[color:var(--navy-deep)] sm:text-[1.7rem]">
+                {area.long}
+              </p>
+            </Reveal>
 
-          <div className="mt-12">
-            <Link
-              to="/contactos"
-              className="btn-primary gap-3 px-7 py-3.5 text-xs uppercase tracking-[0.25em]"
-            >
-              Agendar consulta <ArrowRight className="h-4 w-4" />
-            </Link>
+            <Reveal delay={100} className="mt-14">
+              <Eyebrow>O que acompanhamos</Eyebrow>
+              <ul className="divide-y divide-border border-y border-border">
+                {area.topics.map((t) => (
+                  <li
+                    key={t}
+                    className="flex items-start gap-4 py-4 text-sm text-[color:var(--navy-deep)] sm:text-base"
+                  >
+                    <Check
+                      className="mt-1 h-4 w-4 shrink-0 text-[color:var(--gold-ink)]"
+                      aria-hidden
+                    />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+
+            {faq && (
+              <Reveal
+                delay={100}
+                className="mt-16 rounded-md border border-border bg-card p-7 sm:p-10"
+              >
+                <Eyebrow>Pergunta frequente</Eyebrow>
+                <h2 className="font-serif text-2xl leading-snug text-[color:var(--navy-deep)] sm:text-3xl">
+                  {faq.question}
+                </h2>
+                <div className="mt-6">
+                  <FaqBody faq={faq} />
+                </div>
+                <p className="mt-6 text-xs text-muted-foreground">
+                  Informação de carácter geral, que não dispensa a análise do caso concreto.
+                </p>
+              </Reveal>
+            )}
           </div>
+
+          <aside>
+            <Reveal delay={150} className="lg:sticky lg:top-28">
+              <div className="rounded-md bg-[color:var(--navy-deep)] p-8 text-[color:var(--ivory)]">
+                <p className="text-[11px] uppercase tracking-[0.25em] text-[color:var(--gold)]">
+                  A quem se dirige
+                </p>
+                <ul className="mt-4 space-y-2 font-serif text-xl">
+                  {area.audiences.map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+                <div className="mt-8 border-t border-[color:var(--gold)]/25 pt-8">
+                  <p className="text-sm leading-relaxed text-[color:var(--ivory)]/75">
+                    Quanto mais cedo, melhor. Fale connosco antes de decidir.
+                  </p>
+                  <Link to="/contactos" className="btn-primary mt-6 w-full">
+                    Marcar reunião <ArrowRight className="h-4 w-4" aria-hidden />
+                  </Link>
+                  <a
+                    href={`tel:${a.phoneE164}`}
+                    className="mt-4 flex items-center justify-center gap-2 text-sm text-[color:var(--ivory)]/80 hover:text-[color:var(--gold)]"
+                  >
+                    <Phone className="h-4 w-4 text-[color:var(--gold)]" aria-hidden />
+                    {a.phoneDisplay}
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+          </aside>
         </div>
       </section>
 
       <section className="bg-[color:var(--muted)] py-16">
         <div className="mx-auto max-w-6xl px-6">
-          <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--navy)]/60">
+          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[color:var(--gold-ink)]">
             Outras áreas
           </p>
           <ul className="mt-6 flex flex-wrap gap-2">
@@ -79,7 +142,7 @@ function AreaPage() {
                   <Link
                     to="/areas-de-atuacao/$slug"
                     params={{ slug: x.slug }}
-                    className="inline-block rounded-full border border-border bg-background px-4 py-2 text-sm text-[color:var(--navy-deep)] transition-colors hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]"
+                    className="inline-block rounded-sm border border-border bg-background px-4 py-2 text-sm text-[color:var(--navy-deep)] transition-colors hover:border-[color:var(--gold)] hover:text-[color:var(--gold-ink)]"
                   >
                     {x.title}
                   </Link>

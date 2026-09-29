@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { PageHero } from "@/components/site/Brand";
 import { siteName, absoluteUrl } from "@/lib/site-config";
 import { reopenCookieConsent } from "@/components/site/CookieConsent";
 
@@ -7,7 +8,7 @@ export const Route = createFileRoute("/cookies")({
   head: () => ({
     meta: [
       { title: `Política de Cookies — ${siteName()}` },
-      { name: "robots", content: "noindex, follow" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
     links: [{ rel: "canonical", href: absoluteUrl("/cookies") }],
   }),
@@ -17,12 +18,9 @@ export const Route = createFileRoute("/cookies")({
 function Cookies() {
   return (
     <SiteLayout>
-      <article className="mx-auto max-w-3xl px-6 py-24 lg:py-32">
-        <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Legal</p>
-        <h1 className="mt-4 font-serif text-3xl tracking-tight text-[color:var(--navy-deep)] sm:text-4xl">
-          Política de Cookies
-        </h1>
-        <p className="mt-4 text-xs text-muted-foreground">
+      <PageHero eyebrow="Legal" title="Política de Cookies" />
+      <article className="mx-auto max-w-3xl px-6 py-16 lg:py-20">
+        <p className="text-xs text-muted-foreground">
           Última actualização: {new Date().toLocaleDateString("pt-PT")}
         </p>
 

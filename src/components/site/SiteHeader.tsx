@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
-import { siteConfig, siteName } from "@/lib/site-config";
+import { siteConfig } from "@/lib/site-config";
+import { Wordmark } from "./Brand";
 
 const nav = [
   { to: "/", label: "Início" },
@@ -25,30 +26,18 @@ export function SiteHeader() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-[color:var(--navy-deep)]/95 backdrop-blur border-b border-[color:var(--gold)]/20"
-          : "bg-[color:var(--navy-deep)]/80 backdrop-blur"
+        scrolled || open
+          ? "border-b border-[color:var(--gold)]/20 bg-[color:var(--navy-deep)]/95 backdrop-blur"
+          : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4 lg:py-5">
-        <Link to="/" className="flex min-w-0 items-center gap-3 text-[color:var(--ivory)]">
-          {siteConfig.brand.logo ? (
-            <img
-              src={siteConfig.brand.logo.src}
-              alt={siteConfig.brand.logo.alt}
-              style={{ height: siteConfig.brand.logo.height ?? 44 }}
-              className="w-auto object-contain"
-            />
-          ) : (
-            <span className="min-w-0">
-              <span className="block truncate font-serif text-base leading-tight sm:text-lg">
-                {siteName()}
-              </span>
-              <span className="block text-[10px] uppercase tracking-[0.25em] text-[color:var(--gold-soft)]/80">
-                Advogado(a)
-              </span>
-            </span>
-          )}
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3.5 lg:py-4">
+        <Link
+          to="/"
+          className="flex min-w-0 items-center text-[color:var(--ivory)]"
+          aria-label={`${siteConfig.advogado.firm} — início`}
+        >
+          <Wordmark size="sm" />
         </Link>
 
         <nav className="hidden items-center gap-8 lg:flex">
@@ -70,18 +59,15 @@ export function SiteHeader() {
             <Phone className="h-4 w-4 text-[color:var(--gold)]" aria-hidden />
             {a.phoneDisplay}
           </a>
-          <Link
-            to="/contactos"
-            className="btn-primary px-5 py-2.5 text-xs uppercase tracking-[0.2em]"
-          >
-            Agendar consulta
+          <Link to="/contactos" className="btn-primary btn-sm">
+            Marcar reunião
           </Link>
         </nav>
 
         <div className="flex items-center gap-2 lg:hidden">
           <a
             href={`tel:${a.phoneE164}`}
-            className="btn-primary gap-2 px-3.5 py-2 text-xs uppercase tracking-[0.15em]"
+            className="btn-primary btn-sm"
             aria-label="Ligar para o escritório"
           >
             <Phone className="h-4 w-4" aria-hidden />
@@ -90,7 +76,7 @@ export function SiteHeader() {
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="rounded-full p-1.5 text-[color:var(--ivory)] transition-colors hover:bg-white/10"
+            className="rounded-sm p-1.5 text-[color:var(--ivory)] transition-colors hover:bg-white/10"
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
           >
@@ -114,12 +100,8 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              to="/contactos"
-              onClick={() => setOpen(false)}
-              className="btn-primary mt-4 px-5 py-3 text-xs uppercase tracking-[0.2em]"
-            >
-              Agendar consulta
+            <Link to="/contactos" onClick={() => setOpen(false)} className="btn-primary mt-4">
+              Marcar reunião
             </Link>
           </nav>
         </div>

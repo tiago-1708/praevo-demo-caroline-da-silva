@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { Eyebrow, PageHero } from "@/components/site/Brand";
 import { siteConfig, siteName, absoluteUrl } from "@/lib/site-config";
 import { handleSpot } from "@/lib/spotlight";
 
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/areas-de-atuacao/")({
       { title: `Áreas de Prática — ${siteName()}` },
       {
         name: "description",
-        content: `Áreas de prática do escritório de ${siteName()} em ${siteConfig.advogado.locality}.`,
+        content: `Áreas de prática do ${siteName()} em ${siteConfig.advogado.locality}: ${siteConfig.areas.map((a) => a.title).join(", ")}.`,
       },
       { property: "og:title", content: `Áreas de Prática — ${siteName()}` },
     ],
@@ -23,49 +24,62 @@ export const Route = createFileRoute("/areas-de-atuacao/")({
 function AreasIndex() {
   return (
     <SiteLayout>
-      <section className="bg-[color:var(--navy-deep)] text-[color:var(--ivory)]">
-        <div className="mx-auto max-w-6xl px-6 pt-32 pb-16 lg:pt-40">
-          <p className="animate-fade-rise mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-[color:var(--gold)]">
-            <span className="h-px w-10 bg-[color:var(--gold)]" /> Áreas de Prática
-          </p>
-          <h1 className="animate-fade-rise delay-1 max-w-3xl font-serif text-4xl leading-[1.05] sm:text-5xl">
-            Onde acompanhamos os nossos clientes
-          </h1>
-        </div>
-      </section>
+      <PageHero eyebrow="Áreas de prática" title="Onde acompanhamos os nossos clientes">
+        Uma boutique de advocacia full service: prestamos serviços a empresas privadas, a
+        particulares e a entidades públicas.
+      </PageHero>
 
-      <section className="bg-background py-20">
+      <section className="bg-background py-20 lg:py-24">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="border-t border-border">
             {siteConfig.areas.map((area, i) => {
               const Icon = area.icon;
               return (
-                <Reveal key={area.slug} delay={100 + i * 100}>
+                <Reveal as="li" key={area.slug} delay={60 + i * 60}>
                   <Link
                     to="/areas-de-atuacao/$slug"
                     params={{ slug: area.slug }}
                     onMouseMove={handleSpot}
-                    className="group card-lift block h-full rounded-2xl border border-border bg-background p-8 transition-colors hover:bg-[color:var(--navy-deep)] hover:text-[color:var(--ivory)]"
+                    className="group card-lift grid gap-4 border-b border-border px-2 py-9 hover:!translate-y-0 hover:bg-card sm:px-6 md:grid-cols-[3rem_minmax(0,1fr)_minmax(0,1.1fr)_2rem] md:items-center md:gap-8"
                   >
-                    <p className="font-serif text-xs text-[color:var(--gold)]">
+                    <span className="font-serif text-lg text-[color:var(--gold-ink)]">
                       {String(i + 1).padStart(2, "0")}
-                    </p>
-                    <Icon className="mt-3 h-6 w-6 text-[color:var(--gold)]" aria-hidden />
-                    <h3 className="mt-4 font-serif text-xl text-[color:var(--navy-deep)] group-hover:text-[color:var(--ivory)]">
-                      {area.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground group-hover:text-[color:var(--ivory)]/75">
-                      {area.short}
-                    </p>
-                    <span className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-[color:var(--navy-deep)] group-hover:text-[color:var(--gold)]">
-                      Saber mais{" "}
-                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                     </span>
+                    <div className="flex items-center gap-4">
+                      <Icon className="h-6 w-6 shrink-0 text-[color:var(--gold-ink)]" aria-hidden />
+                      <h2 className="font-serif text-2xl leading-snug text-[color:var(--navy-deep)] sm:text-3xl">
+                        {area.title}
+                      </h2>
+                    </div>
+                    <div>
+                      <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                        {area.short}
+                      </p>
+                      <p className="mt-3 text-[11px] uppercase tracking-[0.2em] text-[color:var(--gold-ink)]">
+                        {area.audiences.join(" · ")}
+                      </p>
+                    </div>
+                    <ArrowRight
+                      className="hidden h-5 w-5 text-[color:var(--navy-deep)] transition-transform group-hover:translate-x-1 md:block"
+                      aria-hidden
+                    />
                   </Link>
                 </Reveal>
               );
             })}
-          </div>
+          </ul>
+
+          <Reveal className="mt-16 grid gap-8 rounded-md bg-[color:var(--muted)] p-8 sm:p-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+            <div>
+              <Eyebrow>Prevenção</Eyebrow>
+              <p className="font-serif text-2xl leading-snug text-[color:var(--navy-deep)] sm:text-3xl">
+                {siteConfig.perfil.motto}
+              </p>
+            </div>
+            <Link to="/contactos" className="btn-primary btn-lg">
+              Marcar reunião <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </Reveal>
         </div>
       </section>
     </SiteLayout>

@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { PageHero } from "@/components/site/Brand";
 import { siteConfig, siteName, absoluteUrl } from "@/lib/site-config";
 
 export const Route = createFileRoute("/aviso-legal")({
   head: () => ({
     meta: [
       { title: `Aviso Legal e Privacidade — ${siteName()}` },
-      { name: "robots", content: "noindex, follow" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
     links: [{ rel: "canonical", href: absoluteUrl("/aviso-legal") }],
   }),
@@ -18,12 +19,9 @@ function AvisoLegal() {
 
   return (
     <SiteLayout>
-      <article className="mx-auto max-w-3xl px-6 py-24 lg:py-32">
-        <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Legal</p>
-        <h1 className="mt-4 font-serif text-3xl tracking-tight text-[color:var(--navy-deep)] sm:text-4xl">
-          Aviso Legal e Política de Privacidade
-        </h1>
-        <p className="mt-4 text-xs text-muted-foreground">
+      <PageHero eyebrow="Legal" title="Aviso Legal e Política de Privacidade" />
+      <article className="mx-auto max-w-3xl px-6 py-16 lg:py-20">
+        <p className="text-xs text-muted-foreground">
           Última actualização: {new Date().toLocaleDateString("pt-PT")}
         </p>
 
@@ -31,9 +29,10 @@ function AvisoLegal() {
           <section>
             <h2 className="text-lg text-[color:var(--navy-deep)]">1. Identificação</h2>
             <p className="mt-3">
-              O presente sítio é da responsabilidade de <strong>{siteName()}</strong>, advogado(a)
-              inscrito(a) na Ordem dos Advogados portuguesa com a cédula profissional n.º {a.cedula}
-              , com domicílio profissional em {a.street}, {a.postalCode} {a.locality}, NIF {a.nif}.
+              O presente sítio é da responsabilidade de <strong>{siteName()}</strong>, escritório do
+              advogado {a.name}, inscrito na Ordem dos Advogados portuguesa com a cédula
+              profissional n.º {a.cedula}, com domicílio profissional em {a.street}, {a.postalCode}{" "}
+              {a.locality}, NIF {a.nif}. Contactos: {a.email} · {a.phoneDisplay}.
             </p>
           </section>
 
@@ -42,26 +41,26 @@ function AvisoLegal() {
             <p className="mt-3">
               O conteúdo deste sítio tem carácter meramente informativo. Não constitui
               aconselhamento jurídico nem estabelece qualquer relação profissional entre o
-              utilizador e o(a) advogado(a). O aconselhamento jurídico requer análise
-              individualizada do caso concreto, em reunião presencial ou por videoconferência.
+              utilizador e o advogado. O aconselhamento jurídico requer análise individualizada do
+              caso concreto.
             </p>
           </section>
 
           <section>
             <h2 className="text-lg text-[color:var(--navy-deep)]">3. Conformidade OA</h2>
             <p className="mt-3">
-              Este sítio observa o Regulamento da Publicidade da Ordem dos Advogados, nomeadamente
-              na abstenção do uso do termo &ldquo;especialista&rdquo; fora dos casos previstos no
-              Estatuto, na ausência de promessas de resultado, testemunhos de clientes ou
-              referências a casos concretos identificáveis, e na proibição de angariação directa de
-              clientela.
+              Este sítio observa as regras de publicidade dos advogados previstas no Estatuto da
+              Ordem dos Advogados e no respetivo regulamento, nomeadamente: informação objetiva e
+              verdadeira, ausência de títulos não atribuídos pela Ordem, de promessas de resultado,
+              de testemunhos de clientes e de referências a casos concretos, e proibição de
+              angariação de clientela.
             </p>
           </section>
 
           <section>
             <h2 className="text-lg text-[color:var(--navy-deep)]">4. Segredo profissional</h2>
             <p className="mt-3">
-              As informações partilhadas com o(a) advogado(a) estão protegidas pelo dever de segredo
+              As informações partilhadas com o advogado estão protegidas pelo dever de segredo
               profissional nos termos do Estatuto da Ordem dos Advogados (Lei n.º 145/2015).
             </p>
           </section>
@@ -69,10 +68,10 @@ function AvisoLegal() {
           <section>
             <h2 className="text-lg text-[color:var(--navy-deep)]">5. Dados pessoais</h2>
             <p className="mt-3">
-              Este sítio não recolhe dados pessoais através de formulários. Se o utilizador
-              contactar o escritório por telefone ou email, os dados transmitidos serão tratados
-              exclusivamente para responder ao pedido e conservados apenas pelo tempo estritamente
-              necessário.
+              Os dados pessoais enviados através do formulário de contacto (nome, email, telefone e
+              mensagem), ou transmitidos por telefone ou email, são tratados exclusivamente para
+              responder ao pedido, com base no consentimento do titular, e conservados apenas pelo
+              tempo estritamente necessário.
             </p>
             <p className="mt-3">
               Responsável pelo tratamento: {siteName()}, com os contactos indicados no ponto 1.
@@ -94,8 +93,8 @@ function AvisoLegal() {
           <section>
             <h2 className="text-lg text-[color:var(--navy-deep)]">7. Lei aplicável</h2>
             <p className="mt-3">
-              Aplica-se a lei portuguesa. Foro competente: tribunais do domicílio profissional do(a)
-              advogado(a).
+              Aplica-se a lei portuguesa. Foro competente: tribunais do domicílio profissional do
+              advogado.
             </p>
           </section>
         </div>

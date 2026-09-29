@@ -74,15 +74,11 @@ export function CookieConsent() {
             <button
               type="button"
               onClick={() => decide("rejected")}
-              className="btn-outline px-5 py-2.5 text-xs uppercase tracking-[0.2em] text-[color:var(--ivory)]/85"
+              className="btn-outline btn-sm text-[color:var(--ivory)]/85"
             >
               Recusar
             </button>
-            <button
-              type="button"
-              onClick={() => decide("accepted")}
-              className="btn-primary px-5 py-2.5 text-xs uppercase tracking-[0.2em]"
-            >
+            <button type="button" onClick={() => decide("accepted")} className="btn-primary btn-sm">
               Aceitar
             </button>
           </div>

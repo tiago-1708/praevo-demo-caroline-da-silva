@@ -11,7 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { siteConfig, siteName, baseUrl } from "../lib/site-config";
+import { siteConfig, siteName, baseUrl, isPlaceholder } from "../lib/site-config";
 
 function NotFoundComponent() {
   return (
@@ -23,7 +23,7 @@ function NotFoundComponent() {
           A página que procura não existe ou foi movida.
         </p>
         <div className="mt-6">
-          <Link to="/" className="btn-primary px-5 py-2.5 text-sm font-medium">
+          <Link to="/" className="btn-primary btn-sm">
             Voltar ao início
           </Link>
         </div>
@@ -54,11 +54,11 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="btn-primary px-5 py-2.5 text-sm font-medium"
+            className="btn-primary btn-sm"
           >
             Tentar novamente
           </button>
-          <a href="/" className="btn-outline px-5 py-2.5 text-sm font-medium text-foreground">
+          <a href="/" className="btn-outline btn-sm text-foreground">
             Início
           </a>
         </div>
@@ -78,8 +78,9 @@ const structuredData = () => {
     description: a.bio.replace(/<[^>]+>/g, "").slice(0, 300),
     address: {
       "@type": "PostalAddress",
-      streetAddress: a.street,
-      postalCode: a.postalCode,
+      // Placeholders ("[...]") ficam de fora dos dados estruturados.
+      ...(isPlaceholder(a.street) ? {} : { streetAddress: a.street }),
+      ...(isPlaceholder(a.postalCode) ? {} : { postalCode: a.postalCode }),
       addressLocality: a.locality,
       addressRegion: a.district,
       addressCountry: "PT",
@@ -93,9 +94,9 @@ const structuredData = () => {
 };
 
 const dynamicFaviconHref = () => {
-  const initial = siteName().charAt(0).toUpperCase();
+  // Monograma "JRR" em serifa, bronze sobre quase-preto.
   const c = siteConfig.brand.colors;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="12" fill="${c.dark}"/><text x="50" y="72" font-family="Georgia,serif" font-weight="600" font-size="64" text-anchor="middle" fill="${c.background}">${initial}</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="14" fill="${c.dark}"/><text x="50" y="64" font-family="Georgia,serif" font-weight="500" font-size="40" letter-spacing="1" text-anchor="middle" fill="${c.accentSoft}">JRR</text><rect x="26" y="74" width="48" height="2" fill="${c.accent}"/></svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 };
 
@@ -104,18 +105,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${siteName()} — Advogado em ${siteConfig.advogado.locality}` },
+      { title: `${siteName()} — Advogados em ${siteConfig.advogado.locality}` },
       {
         name: "description",
-        content: `Escritório de advocacia de ${siteName()} em ${siteConfig.advogado.locality}. Cédula profissional n.º ${siteConfig.advogado.cedula}.`,
+        content: `${siteName()} — ${siteConfig.perfil.tagline}. Advogado ${siteConfig.advogado.name}, em ${siteConfig.advogado.locality}.`,
       },
+      // Site demo: nunca indexar (usa nome e contactos reais do escritório).
+      ...(siteConfig.demo ? [{ name: "robots", content: "noindex, nofollow" }] : []),
       { name: "author", content: siteName() },
       { name: "theme-color", content: siteConfig.themeColor },
       { property: "og:site_name", content: siteName() },
       { property: "og:title", content: siteName() },
       {
         property: "og:description",
-        content: `Escritório de advocacia em ${siteConfig.advogado.locality}.`,
+        content: `${siteConfig.perfil.tagline}. ${siteConfig.advogado.locality}.`,
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_PT" },
@@ -137,7 +140,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap",
       },
     ],
   }),
@@ -152,7 +155,7 @@ function RootShell({ children }: { children: ReactNode }) {
   // Injecta a paleta do cliente como CSS custom properties. Sobrepõe os
   // defaults do styles.css (que ficam como fallback). Alterar a paleta =
   // editar siteConfig.brand.colors em site-config.ts.
-  const brandCss = `:root{--navy-deep:${b.dark};--navy:${b.darkAlt};--gold:${b.accent};--gold-soft:${b.accentSoft};--ivory:${b.background};--background:${b.background};--primary:${b.dark};--primary-foreground:${b.background};--accent:${b.accent};--accent-foreground:${b.dark};--ring:${b.accent};--foreground:${b.dark};--card:#ffffff;--card-foreground:${b.dark};--popover:#ffffff;--popover-foreground:${b.dark};--sidebar:${b.background};--sidebar-foreground:${b.dark};--sidebar-primary:${b.dark};--sidebar-primary-foreground:${b.background};--sidebar-accent:${b.accent};--sidebar-accent-foreground:${b.dark};--sidebar-ring:${b.accent};}`;
+  const brandCss = `:root{--navy-deep:${b.dark};--navy:${b.darkAlt};--gold:${b.accent};--gold-soft:${b.accentSoft};--gold-ink:${b.accentInk};--ivory:${b.background};--background:${b.background};--primary:${b.dark};--primary-foreground:${b.background};--accent:${b.accent};--accent-foreground:${b.dark};--ring:${b.accent};--foreground:${b.dark};--card:#ffffff;--card-foreground:${b.dark};--popover:#ffffff;--popover-foreground:${b.dark};--sidebar:${b.background};--sidebar-foreground:${b.dark};--sidebar-primary:${b.dark};--sidebar-primary-foreground:${b.background};--sidebar-accent:${b.accent};--sidebar-accent-foreground:${b.dark};--sidebar-ring:${b.accent};}`;
   return (
     <html lang="pt-PT">
       <head>
